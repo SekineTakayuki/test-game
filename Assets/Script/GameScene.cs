@@ -14,17 +14,41 @@ namespace DungeonGame
         [SerializeField] private Player player;
         [SerializeField] private MapCreator mapCreator;
         [SerializeField] private CanvasGroup clearCanvasGroup;
+        [SerializeField] private BlackOutGimmick blackOutGimmick;
+        [SerializeField] private CountDownView countDownView;
 
         void Start()
         {
+            // マップ生成
             mapCreator.CreateMap();
             var goalObject = mapCreator.GoalPointObject;
             goalObject.OnGoalAsObservable.Subscribe(_ =>
             {
+                // ゴール時の処理
                 ShowClearAsync().Forget();
             }).AddTo(this);
 
+            // 暗闇ギミック
+            blackOutGimmick.Init();
+
+            // プレイヤー
             player.Init();
+            player.IsStopPlayer = true;
+            player.UpdatePositionAsObservable.Subscribe(x =>
+            {
+                // 移動したらマスクも動かす
+                blackOutGimmick.SetMaskPos(x);
+            }).AddTo(this);
+
+            // スタート時のカウントダウン
+            countDownView.Init();
+            countDownView.CompleteCountDownAsObservable.Subscribe(_ =>
+            {
+                // カウントダウン終了
+                player.IsStopPlayer = false;
+                blackOutGimmick.SetBlackOut(true);
+            }).AddTo(this);
+            countDownView.StartCountDownAsync().Forget();
         }
 
         /// <summary>
@@ -32,16 +56,20 @@ namespace DungeonGame
         /// </summary>
         private async UniTask ShowClearAsync()
         {
-            player.IsGoal = true;
-            clearCanvasGroup.alpha = 1;
+            player.IsStopPlayer = true;
+            blackOutGimmick.SetBlackOut(false);
+            clearCanvasGroup.alpha = 1f;
 
             // 3秒後にタイトルへ
             await UniTask.Delay(TimeSpan.FromSeconds(3f));
 
-            MapDataManager.DestoryInstance();
-
             SceneManager.LoadScene("TitleScene");
         }
-        
+
+        private void OnDestroy()
+        {
+            MapDataManager.DestoryInstance();
+        }
+
     }
 }

@@ -1,6 +1,4 @@
-﻿using NUnit.Framework;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using UnityEngine;
@@ -27,7 +25,9 @@ namespace DungeonGame
                 return instance;
             }
         }
-
+        /// <summary>
+        /// シングルトン破棄
+        /// </summary>
         public static void DestoryInstance()
         {
             instance = null;

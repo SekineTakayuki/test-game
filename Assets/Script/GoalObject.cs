@@ -17,7 +17,7 @@ namespace DungeonGame
             goalSubject = new Subject<Unit>().AddTo(this);
         }
 
-        void OnTriggerEnter2D(Collider2D other)
+        void OnTriggerEnter2D(Collider2D _other)
         {
             // ゴールを通知
             goalSubject.OnNext(Unit.Default);
