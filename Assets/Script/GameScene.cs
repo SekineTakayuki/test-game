@@ -33,7 +33,6 @@ namespace DungeonGame
 
             // プレイヤー
             player.Init();
-            player.IsStopPlayer = true;
             player.UpdatePositionAsObservable.Subscribe(x =>
             {
                 // 移動したらマスクも動かす
@@ -45,8 +44,8 @@ namespace DungeonGame
             countDownView.CompleteCountDownAsObservable.Subscribe(_ =>
             {
                 // カウントダウン終了
-                player.IsStopPlayer = false;
-                blackOutGimmick.SetBlackOut(true);
+                player.StartMove();
+                blackOutGimmick.EnableBlackOut(true);
             }).AddTo(this);
             countDownView.StartCountDownAsync().Forget();
         }
@@ -56,8 +55,8 @@ namespace DungeonGame
         /// </summary>
         private async UniTask ShowClearAsync()
         {
-            player.IsStopPlayer = true;
-            blackOutGimmick.SetBlackOut(false);
+            player.StopMove();
+            blackOutGimmick.EnableBlackOut(false);
             clearCanvasGroup.alpha = 1f;
 
             // 3秒後にタイトルへ

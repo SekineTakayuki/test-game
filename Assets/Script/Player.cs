@@ -14,7 +14,8 @@ namespace DungeonGame
         public Observable<Vector2> UpdatePositionAsObservable
             => updatePositionSubject;
 
-        public bool IsStopPlayer { get; set; } = false;
+        // 移動フラグ
+        private bool isMoving = false;
 
         /// <summary>
         /// 初期化
@@ -23,7 +24,7 @@ namespace DungeonGame
         {
             // 操作設定
             Observable.EveryUpdate()
-                .Where(_ => !IsStopPlayer)
+                .Where(_ => isMoving)
                 .Where(_ => (Input.GetAxis("Horizontal") != 0) || (Input.GetAxis("Vertical") != 0))
                 .Subscribe(_ =>
                 {
@@ -48,6 +49,22 @@ namespace DungeonGame
 
             // 位置を更新
             updatePositionSubject.OnNext(transform.position);
+        }
+
+        /// <summary>
+        /// 移動停止
+        /// </summary>
+        public void StopMove()
+        {
+            isMoving = false;
+        }
+
+        /// <summary>
+        /// 移動開始
+        /// </summary>
+        public void StartMove()
+        {
+            isMoving = true;
         }
     }
 }

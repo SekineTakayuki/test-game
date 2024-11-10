@@ -14,16 +14,16 @@ namespace DungeonGame
         /// </summary>
         public void Init()
         {
-            SetBlackOut(false);
+            EnableBlackOut(false);
             SetMaskPos(MapDataManager.Instance.GetStartPos());
         }
 
         /// <summary>
         /// 暗闇設定
         /// </summary>
-        public void SetBlackOut(bool _isActive)
+        public void EnableBlackOut(bool _isEnable)
         {
-            gameObject.SetActive(_isActive);
+            gameObject.SetActive(_isEnable);
         }
 
         /// <summary>
